@@ -29,3 +29,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Project ###
+logs/
+src/main/webapp/upload
+src/main/webapp/export
+src/main/webapp/import
+
+
+
