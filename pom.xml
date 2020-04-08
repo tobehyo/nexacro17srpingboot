@@ -18,6 +18,13 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+	<repositories>
+	  <repository>
+	    <id>tobesoft-overseas</id>
+	    <url>http://jct.tobesoft.co.jp/overseas/maven/repository</url>
+	  </repository>
+	</repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -35,6 +42,113 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-devtools</artifactId>
+	        <optional>true</optional>
+	    </dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-log4j2</artifactId>-->
+<!--		</dependency>-->
+
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.apache.tomcat.embed</groupId> -->
+<!-- 		    <artifactId>tomcat-embed-jasper</artifactId> -->
+<!-- 		    <scope>provided</scope> -->
+<!-- 		</dependency> -->
+
+		<!-- dependency for nexacro and nexacro xeni api -->
+		<dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+
+		<!-- cos.jar for multipart, poi for excel, nexacro-xapi and nexacro-xeni from tobesoft overseas repo -->
+<!--		<dependency>-->
+<!--			  <groupId>com.servlets</groupId>-->
+<!--			  <artifactId>cos</artifactId>-->
+<!--			  <version>1.5.0_16</version>-->
+<!--		 </dependency>-->
+
+		<dependency>
+			<groupId>com.tobesoft.nexacro17</groupId>
+			<artifactId>nexacroxapi</artifactId>
+			<version>2019.11.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.tobesoft.nexacro17</groupId>
+			<artifactId>nexacroxeni</artifactId>
+			<version>2020.03.18</version>
+		</dependency>
+		<!-- poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>poi-3.10-FINAL-20140208</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>poi-3.10-FINAL-20140208</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>poi-3.10-FINAL-20140208</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>poi-3.10-FINAL-20140208</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scrachapd</artifactId>
+			<version>poi-3.10-FINAL-20140208</version>
+		</dependency>
+
+		<!-- dependency for nexacro xeni -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>stax</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
