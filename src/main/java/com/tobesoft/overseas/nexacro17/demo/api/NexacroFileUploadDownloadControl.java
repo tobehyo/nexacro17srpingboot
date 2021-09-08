@@ -1,54 +1,57 @@
 package com.tobesoft.overseas.nexacro17.demo.api;
 
-import com.nexacro17.xapi.data.*;
-import com.nexacro17.xapi.tx.PlatformException;
-import com.nexacro17.xapi.tx.PlatformRequest;
-import com.nexacro17.xapi.tx.PlatformResponse;
-import com.nexacro17.xapi.tx.PlatformType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.nexacro17.xapi.data.ColumnHeader;
+import com.nexacro17.xapi.data.DataSet;
+import com.nexacro17.xapi.data.DataTypes;
+import com.nexacro17.xapi.data.PlatformData;
+import com.nexacro17.xapi.data.VariableList;
+import com.nexacro17.xapi.tx.PlatformException;
+import com.nexacro17.xapi.tx.PlatformRequest;
+import com.nexacro17.xapi.tx.PlatformResponse;
+import com.nexacro17.xapi.tx.PlatformType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 public class NexacroFileUploadDownloadControl {
 
-    @Autowired
-    private WebApplicationContext appContext;
-
     private static final Logger log = LogManager.getLogger(NexacroFileUploadDownloadControl.class);
 
-    private static final String SP = File.separator;
-    private static final String PREFIX = "_file_";
+    private static final String SP = File.separator;  
     private static final String PATH = "upload";
+    private static final String CHAR_SET = "UTF-8";
+
 
     private String getFilePath(String userFolder) {
-        ServletContext sc = appContext.getServletContext();
-        assert sc != null;
-        String realPath = sc.getRealPath("/");
+        String realPath = new File("src/main/resources/static").getAbsolutePath();
         String uploadPath =  realPath + SP + PATH + SP + userFolder;
-
+        log.debug(uploadPath);
         File extFolder = new File(uploadPath);
         if(!extFolder.exists()) {
-            extFolder.mkdir();
+            extFolder.mkdirs();
         }
         return uploadPath;
     }
@@ -67,10 +70,9 @@ public class NexacroFileUploadDownloadControl {
         }
     }
 
-    private void sendPlatformData(HttpServletResponse response, DataSet ds) throws IOException, PlatformException {
-        String strCharset = "UTF-8";
+    private void sendPlatformData(HttpServletResponse response, DataSet ds) throws IOException, PlatformException {        
         String platformType = PlatformType.CONTENT_TYPE_XML;
-        PlatformResponse platformResponse = new PlatformResponse(response.getOutputStream(), platformType, strCharset);
+        PlatformResponse platformResponse = new PlatformResponse(response.getOutputStream(), platformType, CHAR_SET);
         PlatformData resData = new PlatformData();
         VariableList resVarList = resData.getVariableList();
 
@@ -81,19 +83,17 @@ public class NexacroFileUploadDownloadControl {
         platformResponse.sendData();
     }
 
-    @RequestMapping("/services/downloadFileList.do" )
+    @RequestMapping("/services/downloadFileList" )
     public void searchFiles(HttpServletRequest request, HttpServletResponse response) throws IOException, PlatformException {
 
-        String strCharset = "utf-8";
-
-        PlatformRequest platformRequest = new PlatformRequest(request.getInputStream(), PlatformType.CONTENT_TYPE_XML, strCharset);
+        PlatformRequest platformRequest = new PlatformRequest(request.getInputStream(), PlatformType.CONTENT_TYPE_XML, CHAR_SET);
         platformRequest.receiveData();
         PlatformData inPD = platformRequest.getData();
         VariableList inVariableList  = inPD.getVariableList();
 
         String userFileFolder = inVariableList.getString("filefolder");
         String uploadPath = getFilePath(userFileFolder);
-        String url = request.getRequestURL().substring(0, request.getRequestURL().lastIndexOf("/")) + "/" + PATH + "/" +userFileFolder + "/";
+        String url = request.getRequestURL().substring(0, request.getRequestURL().lastIndexOf("/services")) + "/" + PATH + "/" +userFileFolder + "/";
 
         List<File> fileList = new ArrayList<>();
         File directory = new File(uploadPath);
@@ -115,7 +115,7 @@ public class NexacroFileUploadDownloadControl {
         sendPlatformData(response, ds);
     }
 
-    @RequestMapping("/services/uploadFile.do")
+    @RequestMapping("/services/uploadFile")
     public void uploadFiles(@RequestParam("filefolder") String userFileFolder, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if(!(request instanceof MultipartHttpServletRequest)) {
@@ -126,7 +126,7 @@ public class NexacroFileUploadDownloadControl {
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
             // parameter and multipart parameter
-            Enumeration<String> parameterNames = multipartRequest.getParameterNames();
+            //Enumeration<String> parameterNames = multipartRequest.getParameterNames();
 
             // files..
             Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
@@ -188,7 +188,7 @@ public class NexacroFileUploadDownloadControl {
 
     }
 
-    @RequestMapping("/services/downloadFile.do")
+    @RequestMapping("/services/downloadFile")
     public void downloadFile(HttpServletRequest request, HttpServletResponse response,
                              @RequestParam("filename") String fileName,
                              @RequestParam("filefolder") String fileFolder) throws Exception {
@@ -226,7 +226,7 @@ public class NexacroFileUploadDownloadControl {
             {
                 response.setContentType("application/octet;charset=utf-8");
                 //response.setHeader("Content-Disposition", "attachment; filename = \"" + filename + "\"");
-                response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "utf-8") + ";");
+                response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, CHAR_SET) + ";");
 
                 out_stream = response.getOutputStream();
                 in_stream = new BufferedInputStream(new FileInputStream(file));
@@ -276,7 +276,7 @@ public class NexacroFileUploadDownloadControl {
         }
     }
 
-    @RequestMapping("/services/downloadFileAll.do")
+    @RequestMapping("/services/downloadFileAll")
     public void downloadFileAll(HttpServletRequest request, HttpServletResponse response,
                                 @RequestParam("filenamelist") String fileNameList,
                                 @RequestParam("filefolder") String userFolder) {

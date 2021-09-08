@@ -1,28 +1,35 @@
 package com.tobesoft.overseas.nexacro17.demo.api;
 
-import com.nexacro17.xapi.data.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.nexacro17.xapi.data.DataSet;
+import com.nexacro17.xapi.data.DataSetList;
+import com.nexacro17.xapi.data.DataTypes;
+import com.nexacro17.xapi.data.PlatformData;
+import com.nexacro17.xapi.data.VariableList;
 import com.nexacro17.xapi.tx.PlatformException;
 import com.nexacro17.xapi.tx.PlatformRequest;
 import com.nexacro17.xapi.tx.PlatformResponse;
 import com.nexacro17.xapi.tx.PlatformType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 @RestController
 public class NexacroLargeDataController {
 
-    private static final Logger logger = LogManager.getLogger(NexacroLargeDataController.class);
+    private static final Logger log = LogManager.getLogger(NexacroLargeDataController.class);
 
-    @RequestMapping("/services/ssvRead.do")
+    @RequestMapping("/services/ssvRead")
     public void getSsvData(@RequestParam("rowcount") String rowCount, HttpServletRequest request, HttpServletResponse response) throws IOException, PlatformException {
 
         String strCharset = "utf-8";
@@ -57,8 +64,8 @@ public class NexacroLargeDataController {
                 rowCount = "10000";
             }
 
-            int nRow;
-            String path = request.getServletContext().getRealPath("/") + "dat/ssv_" + rowCount + ".dat";
+            int nRow;            
+            String path = new File("src/main/resources/dat/ssv_" + rowCount + ".dat").getAbsolutePath();            
             BufferedReader br = new BufferedReader(new FileReader(path));
 
             String line;
